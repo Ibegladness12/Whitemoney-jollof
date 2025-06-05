@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>White Money Jollof</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-yellow-50 font-sans">
+<style>
+    .header {
+  background-color: #dc2626; /* Tailwind red-600 */
+  color: white;
+  padding: 1.5rem 1rem; /* 24px 16px */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.header-left h1 {
+  font-size: 2.5rem; /* ~text-4xl */
+  margin: 0;
+  font-weight: 700;
+}
+
+.header-left p {
+  margin-top: 0.5rem;
+  font-size: 1.125rem; /* ~text-lg */
+}
+
+.header-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  background-color: white;
+  color: #dc2626;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem; /* 8px 20px */
+  border: none;
+  border-radius: 9999px; /* fully rounded */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  background-color: #f3f4f6; /* light gray */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 350px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+}
+
+.modal-content form input {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.modal-content form button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 9999px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.modal-content form button[type="button"] {
+  background-color: #aaa;
+  margin-top: 0.5rem;
+}
+
+.modal-content form button:hover {
+  background-color: #b91c1c;
+}
+
+@media (max-width: 767px) {
+  .header {
+    flex-wrap: wrap;
+  }
+  .header-left {
+    flex-basis: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+  #sidebar {
+    transition: transform 0.3s ease-in-out;
+  }
+  @media (max-width: 768px) {
+  .navbar-username {
+    display: none;
+  }
+  .header-left img{
+    width: 20vh;
+  }
+}
+.header-left img{
+  width: 15vh;
+  border-radius: 50px;
+}
+iframe{
+    margin-top: 40px;
+}
+
+.aspect-w-16 {
+  position: relative;
+  width: 100%;
+}
+.aspect-w-16::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%; /* 16:9 ratio */
+}
+.aspect-h-9 > iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+</style>
+<!-- Login Modal -->
+<!-- Sign Up Modal -->
+<div id="signupModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="signupUsername" placeholder="Username" required />
+      <input type="email" id="signupEmail" placeholder="Email" required />
+      <input type="password" id="signupPassword" placeholder="Password" required />
+      <button type="submit">Sign Up</button>
+      <button type="button" onclick="toggleModal('signupModal')">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="loginUsername" placeholder="Username" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <button type="button" onclick="toggleModal('loginModal')">Cancel</button>
+    </form>
+  </div>
+</div>
+
+  <!-- Header -->
+  <header class="header">
+  <div class="header-left">
+   
+    <img src="https://th.bing.com/th/id/OIP.tith_UiqP5W7ddCLhZboNgHaHj?r=0&cb=thvnextc1&rs=1&pid=ImgDetMain" alt=""> <h1>White Money Jollof</h1>
+    <p>Deliciously Delivered To Your Doorstep</p>
+  </div>
+  
+  <!-- Hamburger menu button for small screens -->
+  <button id="menuToggle" class="block md:hidden text-white focus:outline-none" aria-label="Toggle Menu">
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+      viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  <!-- Nav buttons container, hidden on small screens by default -->
+  <div id="navButtons" class="header-right hidden md:flex gap-4">
+    <button class="btn" onclick="toggleModal('loginModal')" id="loginBtn">Login</button>
+    <button class="btn" onclick="toggleModal('signupModal')" id="signupBtn">Sign Up</button>
+  </div>
+</header>
+
+<!-- Virtual Tour Section -->
+<section class="py-16 px-6 bg-yellow-100 max-w-6xl mx-auto">
+  <h3 class="text-3xl font-bold text-center text-red-600 mb-6">Virtual Tour of Ikoyi, Lagos</h3>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!4v1717435410915!6m8!1m7!1sCAoSLEFGMVFpcE5Sb0J1M0R3Z3Z4Y2hoRkp6bUV5XzFhQXBaNUlqX2RxT2o3QXJp!2m2!1d6.4345977!2d3.428695!3f155.3!4f-5.17!5f0.7820865974627469"
+    width="100%"
+    height="450"
+    style="border:0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe>
+</section>
+
+
+<div id="sidebar" class="fixed inset-0 bg-red-600 text-white z-50 transform -translate-x-full transition-transform md:hidden">
+  <div class="flex flex-col h-full p-6">
+    <!-- Header: username + logout -->
+    <div class="mb-8 flex items-center justify-between border-b border-red-400 pb-4">
+      <h2 id="sidebarUsername" class="text-xl font-bold"></h2>
+      <button id="sidebarLogoutBtn" class="bg-white text-red-600 px-3 py-1 rounded-full font-semibold hover:bg-gray-100">Logout</button>
+    </div>
+
+    <!-- Buttons -->
+    <nav class="flex flex-col gap-4">
+      <button id="placeOrderBtn" class="bg-white text-red-600 font-semibold py-3 rounded-full hover:bg-gray-100">Place Order</button>
+      <button id="cartBtn" class="bg-white text-red-600 font-semibold py-3 rounded-full hover:bg-gray-100">Cart</button>
+      <button id="checkoutBtn" class="bg-white text-red-600 font-semibold py-3 rounded-full hover:bg-gray-100">Checkout</button>
+      <button id="becomeAmbassadorBtn" class="bg-white text-red-600 font-semibold py-3 rounded-full hover:bg-gray-100">Become an Ambassador</button>
+    </nav>
+
+    <!-- Close Sidebar Button at bottom -->
+    <div class="mt-auto">
+      <button id="closeSidebarBtn" class="text-white underline">Close Menu</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Menu -->
+  <section class="bg-white py-12 px-6 max-w-6xl mx-auto">
+    <h3 class="text-3xl font-bold text-center text-red-600 mb-10">Menu just for You</h3>
+    <div class="grid gap-8 md:grid-cols-3" id="menuItems">
+      <div class="bg-yellow-100 p-6 rounded-2xl shadow-lg text-center">
+        <img src="https://th.bing.com/th/id/OIP.vfndHME1x1Efnx7q0D173gHaGL?r=0&cb=thvnextc1&rs=1&pid=ImgDetMain" class="rounded-xl mb-4 w-full" />
+        <h4 class="text-xl font-bold mb-1">Smoky Jollof</h4>
+        <p class="text-gray-600 mb-2">₦2500</p>
+        <button onclick="addToCart('Smoky Jollof', 2500)" class="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-700">Order</button>
+      </div>
+      <div class="bg-yellow-100 p-6 rounded-2xl shadow-lg text-center">
+        <img src="https://th.bing.com/th/id/OIP.XS1ZETbRgosUul9J6SKr1QHaEJ?r=0&cb=thvnextc1&rs=1&pid=ImgDetMain" class="rounded-xl mb-4 w-full" />
+        <h4 class="text-xl font-bold mb-1">special Jollof</h4>
+        <p class="text-gray-600 mb-2">₦3000</p>
+        <button onclick="addToCart('Special Jollof', 3000)" class="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-700">Order</button>
+      </div>
+      <div class="bg-yellow-100 p-6 rounded-2xl shadow-lg text-center">
+        <img src="https://images.unsplash.com/photo-1613141411673-40d5e5b8b8b1" class="rounded-xl mb-4 w-full" />
+        <h4 class="text-xl font-bold mb-1">Spicy Suya Wrap</h4>
+        <p class="text-gray-600 mb-2">₦1800</p>
+        <button onclick="addToCart('Spicy Suya Wrap', 1800)" class="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-700">Order</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Section -->
+  <section class="bg-yellow-200 py-10 px-6">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-xl">
+      <h3 class="text-2xl font-bold text-center text-red-600 mb-4">Your Cart</h3>
+      <ul id="cartItems" class="text-lg text-gray-800 space-y-2"></ul>
+      <p class="mt-4 text-xl font-bold text-right">Total: ₦<span id="cartTotal">0</span></p>
+      <button onclick="goToCheckout()" class="mt-6 w-full bg-red-600 text-white py-3 px-6 rounded-full font-bold hover:bg-red-800">Proceed to Checkout</button>
+    </div>
+  </section>
+
+
+<section id="trackingSection" class="py-10 px-6 bg-yellow-100 max-w-2xl mx-auto rounded-xl shadow-xl my-10">
+  <h3 class="text-3xl font-bold text-center text-red-600 mb-6">Track Your Order</h3>
+  <form id="trackingForm" >
+    <input type="text" id="trackingInput" placeholder="Enter your tracking ID" required
+      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+      <!-- <input type="hidden" name="trackingId" id="orderDetailsInput" /> -->
+
+    <button type="submit" class="bg-red-600 text-white py-3 px-6 rounded-full font-bold shadow hover:bg-red-800 transition w-full">
+      Track
+    </button>
+  </form>
+  <p id="trackingResult" class="mt-4 text-center font-semibold text-lg"></p>
+</section>
+
+
+  <section class="max-w-4xl mx-auto px-6 py-12 bg-white rounded-xl shadow-lg">
+  <h3 class="text-3xl font-bold text-center text-red-600 mb-8">Customer Reviews</h3>
+
+  <div id="reviewsList" class="space-y-6 mb-8">
+    <!-- Existing reviews will be appended here -->
+  </div>
+
+  <form id="reviewForm" class="max-w-xl mx-auto space-y-4">
+    <input type="text" id="reviewerName" placeholder="Your Name" required
+      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    
+    <textarea id="reviewText" rows="4" placeholder="Write your review..." required
+      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"></textarea>
+    
+    <label class="flex items-center space-x-2">
+      <span>Rating:</span>
+      <select id="reviewRating" required
+        class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+        <option value="" disabled selected>Select rating</option>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+      </select>
+    </label>
+
+    <button type="submit" class="bg-red-600 text-white py-3 px-6 rounded-full w-full font-bold hover:bg-red-800 transition">
+      Submit Review
+    </button>
+  </form>
+</section>
+
+  <!-- Order Form -->
+<section id="form" class="py-16 px-6 bg-yellow-100">
+  <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-xl">
+    <h3 class="text-3xl font-bold text-center text-red-600 mb-6">Place Your Order</h3>
+    <form id="orderForm"  action="https://formsubmit.co/ibegladness6@gmail.com" method="POST" class="space-y-6">
+       <input type="hidden" name="_subject" value="New Food Order!">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="table">
+   
+  <!-- Full Name -->
+
+  <div>
+    <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+    <input type="text" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
+
+  <!-- Email -->
+  <div>
+    <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+    <input type="email" name="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
+
+  <!-- Phone -->
+  <div>
+    <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+    <input type="tel" name="phone" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+  </div>
+
+  <!-- Payment Method -->
+  <div>
+    <label class="block text-gray-700 font-semibold mb-2">Payment Method</label>
+    <select id="paymentMethod" name="paymentMethod" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+      <option value="" disabled selected>Select a payment method</option>
+      <option value="paystack">Pay with Card (Paystack)</option>
+      <option value="bank">Bank Transfer</option>
+    </select>
+  </div>
+
+  <!-- Card Details (conditionally shown) -->
+  <div id="cardDetails" class="hidden space-y-4 mt-4 p-4 border border-gray-300 rounded-lg bg-yellow-50">
+    <h4 class="text-lg font-semibold text-red-600 mb-2">Enter Card Details</h4>
+    <input type="text" name="cardNumber" id="cardNumber" placeholder="Card Number" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    <div class="flex space-x-4">
+      <input type="text" name="expiry" id="expiry" placeholder="Expiry MM/YY" class="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+      <input type="text" name="cvv" id="cvv" placeholder="CVV" class="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    </div>
+  </div>
+
+  <!-- Bank Details (always shown) -->
+  <div id="bankDetails" class="hidden mt-4 p-4 border border-gray-300 rounded-lg bg-yellow-50">
+    <h4 class="text-lg font-semibold text-red-600 mb-2">Bank Transfer Details</h4>
+    <p><strong>Account Number:</strong> 9134220137</p>
+    <p><strong>Account Name:</strong> Ibe Gladness</p>
+    <p><strong>Bank:</strong> Palmpay</p>
+    <p class="mt-2 italic text-gray-600">Please make your payment and submit the form to confirm your order.</p>
+  </div>
+
+  <!-- Order Details -->
+  <input type="hidden" name="orderDetails" id="orderDetailsInput" />
+
+  <!-- Submit -->
+  <button type="submit" class="bg-red-600 text-white py-3 px-6 rounded-full font-bold shadow hover:bg-red-800 transition w-full">Submit Order</button>
+</form>
+
+
+  </div>
+<!-- map -->
+ <section>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d198224.14991895576!2d3.2505129499999996!3d6.548376099999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c3ef4e3f4d9%3A0xd3243c7f1e0f57fc!2sLagos%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1717435410915!5m2!1sen!2sng"
+    width="100%"
+    height="450"
+    style="border:0; margin-top:30px;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</section>
+
+</section>
+  <!-- Footer -->
+  <footer class="bg-red-600 text-white text-center py-6">
+    <p>&copy; 2025 White Money Jollof. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+let cart = [];
+
+// Add item to cart
+function addToCart(name, price) {
+  cart.push({ name, price: Number(price) });
+  localStorage.setItem("cart", JSON.stringify(cart));
+  displayCart();
+}
+
+// Display cart items and total
+function displayCart() {
+  const cartItemsEl = document.getElementById("cartItems");
+  const cartTotalEl = document.getElementById("cartTotal");
+  if (!cartItemsEl || !cartTotalEl) return;
+
+  cartItemsEl.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    cartItemsEl.innerHTML += `
+      <li class="flex justify-between items-center border-b pb-1">
+        <span>${index + 1}. ${item.name} - ₦${item.price}</span>
+        <button onclick="removeFromCart(${index})" class="text-red-600 font-bold text-xl hover:text-red-800">&times;</button>
+      </li>`;
+    total += Number(item.price);
+  });
+
+  cartTotalEl.textContent = `${total}`;
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  displayCart();
+}
+
+function goToCheckout() {
+  const formEl = document.getElementById("orderForm") || document.getElementById("form");
+  if (!formEl) return;
+  window.scrollTo({
+    top: formEl.offsetTop,
+    behavior: "smooth",
+  });
+}
+
+function toggleModal(id) {
+  const modal = document.getElementById(id);
+  modal?.classList.toggle("hidden");
+}
+
+// User management functions
+const usersKey = "wmj_users";
+const loggedInUserKey = "wmj_loggedInUser";
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem(usersKey)) || [];
+}
+
+function saveUsers(users) {
+  localStorage.setItem(usersKey, JSON.stringify(users));
+}
+
+function saveLoggedInUser(username) {
+  localStorage.setItem(loggedInUserKey, username);
+}
+
+function getLoggedInUser() {
+  return localStorage.getItem(loggedInUserKey);
+}
+
+function logoutUser() {
+  localStorage.removeItem(loggedInUserKey);
+  location.reload();
+}
+
+function updateUIForLoggedInUser(username) {
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  if (loginBtn) loginBtn.style.display = "none";
+  if (signupBtn) signupBtn.style.display = "none";
+
+  const headerRight = document.querySelector(".header-right");
+  if (!headerRight) return;
+
+  const oldGreeting = document.getElementById("userGreeting");
+  if (oldGreeting) oldGreeting.remove();
+
+  const greeting = document.createElement("div");
+  greeting.id = "userGreeting";
+  greeting.textContent = `Hello, ${username}!`;
+  greeting.style.color = "white";
+  greeting.style.fontWeight = "700";
+  greeting.style.fontSize = "1.25rem";
+  greeting.style.marginRight = "1rem";
+
+  const logoutBtn = document.createElement("button");
+  logoutBtn.textContent = "Logout";
+  logoutBtn.className = "btn";
+  logoutBtn.onclick = logoutUser;
+
+  headerRight.appendChild(greeting);
+  headerRight.appendChild(logoutBtn);
+}
+
+// DOMContentLoaded - setup
+document.addEventListener("DOMContentLoaded", () => {
+  const storedCart = localStorage.getItem("cart");
+  if (storedCart) {
+    cart = JSON.parse(storedCart);
+    displayCart();
+  }
+
+  const paymentMethodSelect = document.getElementById("paymentMethod");
+  const bankDetails = document.getElementById("bankDetails");
+  const cardDetails = document.getElementById("cardDetails");
+
+  if (paymentMethodSelect) {
+    paymentMethodSelect.addEventListener("change", () => {
+      const val = paymentMethodSelect.value;
+      if (val === "paystack" || val === "card") {
+        cardDetails?.classList.remove("hidden");
+        bankDetails?.classList.add("hidden");
+      } else if (val === "bank" || val === "transfer") {
+        bankDetails?.classList.remove("hidden");
+        cardDetails?.classList.add("hidden");
+      } else {
+        cardDetails?.classList.add("hidden");
+        bankDetails?.classList.add("hidden");
+      }
+    });
+  }
+
+  // Handle Paystack
+  const payWithPaystackBtn = document.getElementById("payWithPaystack");
+  const orderForm = document.getElementById("orderForm");
+  const orderDetailsInput = document.getElementById("orderDetailsInput");
+
+  if (payWithPaystackBtn && orderForm) {
+    payWithPaystackBtn.addEventListener("click", () => {
+      const name = orderForm.name.value.trim();
+      const email = orderForm.email.value.trim();
+
+      if (!name || !email) {
+        alert("Please fill in your name and email before paying.");
+        return;
+      }
+
+      let handler = PaystackPop.setup({
+        key: "YOUR_PAYSTACK_PUBLIC_KEY", // Replace with actual key
+        email: email,
+        amount: 1000 * 100,
+        currency: "NGN",
+        ref: "" + Math.floor(Math.random() * 1000000000 + 1),
+        metadata: {
+          custom_fields: [{ display_name: "Full Name", variable_name: "full_name", value: name }],
+        },
+        callback: function (response) {
+          alert("Payment successful! Transaction reference: " + response.reference);
+        },
+        onClose: function () {
+          alert("Payment window closed.");
+        },
+      });
+
+      handler.openIframe();
+    });
+  }
+
+  // ✅ FIXED: Only one order form submission handler
+  if (orderForm && orderDetailsInput) {
+    orderForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = orderForm.name.value.trim();
+      const paymentMethod = orderForm.paymentMethod.value;
+
+      if (!paymentMethod) {
+        alert("Please select a payment method.");
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const orderSummary = cart
+        .map((item, index) => `${index + 1}. ${item.name} - ₦${item.price}`)
+        .join("\n");
+
+      const total = cart.reduce((sum, item) => sum + Number(item.price), 0);
+      const fullOrder = `${orderSummary}\nTotal: ₦${total}`;
+      orderDetailsInput.value = fullOrder;
+
+      let paymentInfo = "";
+      if (paymentMethod === "paystack" || paymentMethod === "card") {
+        paymentInfo = "Please proceed to pay with your card.";
+      } else if (paymentMethod === "bank" || paymentMethod === "transfer") {
+        paymentInfo = "Please transfer to 9134220137 - Ibe Gladness (Palmpay).";
+      }
+
+      alert(`Thank you ${name}!\nYou ordered:\n${fullOrder}\n\n${paymentInfo}`);
+
+      cart = [];
+      localStorage.removeItem("cart");
+      displayCart();
+
+      orderForm.reset();
+      bankDetails?.classList.add("hidden");
+      cardDetails?.classList.add("hidden");
+
+      // Finally submit the form
+      orderForm.submit();
+    });
+  }
+
+  // Login / Signup
+  const loginForm = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
+
+  if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("signupUsername")?.value.trim();
+      const email = document.getElementById("signupEmail")?.value.trim();
+      const password = document.getElementById("signupPassword")?.value;
+
+      if (!username || !email || !password) {
+        alert("Please fill in all signup fields.");
+        return;
+      }
+
+      let users = getUsers();
+      if (users.find((u) => u.username.toLowerCase() === username.toLowerCase())) {
+        alert("Username already exists.");
+        return;
+      }
+
+      users.push({ username, email, password });
+      saveUsers(users);
+      alert("Sign up successful! Please log in.");
+      toggleModal("signupModal");
+      toggleModal("loginModal");
+      signupForm.reset();
+    });
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("loginUsername")?.value.trim();
+      const password = document.getElementById("loginPassword")?.value;
+
+      if (!username || !password) {
+        alert("Please fill in all login fields.");
+        return;
+      }
+
+      let users = getUsers();
+      const user = users.find(
+        (u) => u.username.toLowerCase() === username.toLowerCase() && u.password === password
+      );
+
+      if (!user) {
+        alert("Invalid username or password.");
+        return;
+      }
+
+      saveLoggedInUser(user.username);
+      alert(`Welcome back, ${user.username}!`);
+      toggleModal("loginModal");
+      updateUIForLoggedInUser(user.username);
+      loginForm.reset();
+    });
+  }
+
+  const loggedInUser = getLoggedInUser();
+  if (loggedInUser) {
+    updateUIForLoggedInUser(loggedInUser);
+  }
+
+  const menuToggle = document.getElementById("menuToggle");
+  if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+      const nav = document.getElementById("navButtons");
+      nav?.classList.toggle("hidden");
+    });
+  }
+
+  const sidebar = document.getElementById("sidebar");
+  const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+  const sidebarUsername = document.getElementById("sidebarUsername");
+  const sidebarLogoutBtn = document.getElementById("sidebarLogoutBtn");
+
+  if (menuToggle && sidebar && sidebarUsername && sidebarLogoutBtn) {
+    menuToggle.addEventListener("click", () => {
+      const username = getLoggedInUser() || "Guest";
+      sidebarUsername.textContent = username === "Guest" ? "Welcome!" : `Hello, ${username}!`;
+      sidebarLogoutBtn.style.display = username === "Guest" ? "none" : "inline-block";
+      sidebar.classList.remove("-translate-x-full");
+    });
+  }
+
+  if (closeSidebarBtn && sidebar) {
+    closeSidebarBtn.addEventListener("click", () => {
+      sidebar.classList.add("-translate-x-full");
+    });
+  }
+
+  if (sidebarLogoutBtn) {
+    sidebarLogoutBtn.addEventListener("click", () => {
+      logoutUser();
+    });
+  }
+
+  document.getElementById("placeOrderBtn")?.addEventListener("click", () => {
+    sidebar?.classList.add("-translate-x-full");
+    goToCheckout();
+  });
+
+  document.getElementById("cartBtn")?.addEventListener("click", () => {
+    sidebar?.classList.add("-translate-x-full");
+    const cartItemsEl = document.getElementById("cartItems");
+    if (cartItemsEl) {
+      window.scrollTo({
+        top: cartItemsEl.offsetTop - 100,
+        behavior: "smooth",
+      });
+    }
+  });
+
+  document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+    sidebar?.classList.add("-translate-x-full");
+    goToCheckout();
+  });
+
+  document.getElementById("becomeAmbassadorBtn")?.addEventListener("click", () => {
+    sidebar?.classList.add("-translate-x-full");
+    alert("Thank you for your interest! Ambassador feature coming soon.");
+  });
+
+  sidebar?.addEventListener("click", (e) => {
+    if (e.target === sidebar) {
+      sidebar.classList.add("-translate-x-full");
+    }
+  });
+});
+
+document.getElementById("orderForm").addEventListener("submit", function(e) {
+  e.preventDefault();  // prevent actual submission so we can test
+
+  const name = this.name.value.trim();
+  const email = this.email.value.trim();
+  const phone = this.phone.value.trim();
+
+  if (!name || !email || !phone) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  alert(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}`);
+
+  // To actually submit after this alert, uncomment the next line:
+  // this.submit();
+});
+
+document.getElementById("orderForm").addEventListener("submit", function(e) {
+  const name = this.name.value.trim();
+  const email = this.email.value.trim();
+  const phone = this.phone.value.trim();
+
+  if (!name || !email || !phone) {
+    e.preventDefault();
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  // Optional: let it alert and still submit
+  alert(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}`);
+  // Allow the form to submit to Formspree
+});
+
+
+
+  // Load existing reviews from localStorage or initialize empty array
+  const reviewsKey = 'wmjollofReviews';
+  const reviewsList = document.getElementById('reviewsList');
+  const reviewForm = document.getElementById('reviewForm');
+
+  function renderReviews() {
+    const reviews = JSON.parse(localStorage.getItem(reviewsKey)) || [];
+    reviewsList.innerHTML = '';
+
+    if (reviews.length === 0) {
+      reviewsList.innerHTML = '<p class="text-center text-gray-500">No reviews yet. Be the first!</p>';
+      return;
+    }
+
+    reviews.forEach(({name, text, rating}) => {
+      const stars = '⭐'.repeat(rating);
+      const reviewItem = document.createElement('div');
+      reviewItem.className = "border border-gray-200 rounded-lg p-4 shadow-sm";
+
+      reviewItem.innerHTML = `
+        <p class="font-semibold text-red-600">${name}</p>
+        <p class="text-yellow-500 mb-2">${stars}</p>
+        <p class="text-gray-700">${text}</p>
+      `;
+      reviewsList.appendChild(reviewItem);
+    });
+  }
+
+  reviewForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('reviewerName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const rating = parseInt(document.getElementById('reviewRating').value);
+
+    if (!name || !text || !rating) return alert('Please fill out all fields.');
+
+    const reviews = JSON.parse(localStorage.getItem(reviewsKey)) || [];
+    reviews.unshift({name, text, rating}); // add new review to the start
+
+    localStorage.setItem(reviewsKey, JSON.stringify(reviews));
+    renderReviews();
+
+    reviewForm.reset();
+  });
+
+  // Initial render
+  renderReviews();
+
+
+  const orderStatuses = [
+  { status: "Order Received", duration: 5000 },      // 5 seconds
+  { status: "Preparing Food", duration: 30000 },     // 30 seconds
+  { status: "Out for Delivery", duration: 60000 },   // 60 seconds
+  { status: "Delivered", duration: 0 }                // final
+];
+
+function startTracking() {
+  const orderId = document.getElementById('orderIdInput').value.trim();
+  const statusDiv = document.getElementById('trackingStatus');
+
+  if (!orderId) {
+    statusDiv.textContent = "Please enter a valid Order ID.";
+    return;
+  }
+
+  let i = 0;
+
+  function updateStatus() {
+    if (i >= orderStatuses.length) {
+      statusDiv.textContent += " ✅ Order Complete!";
+      return;
+    }
+
+    statusDiv.textContent = `Order #${orderId}: ${orderStatuses[i].status}`;
+
+    const duration = orderStatuses[i].duration;
+    i++;
+
+    if (duration > 0) {
+      setTimeout(updateStatus, duration);
+    } else {
+      statusDiv.textContent += " ✅ Order Complete!";
+    }
+  }
+
+  updateStatus();
+}
+
+
+
+  // Utility to generate a random tracking ID: WMJ + 7 random digits
+  function generateTrackingID() {
+    return 'WMJ' + Math.floor(1000000 + Math.random() * 9000000);
+  }
+
+  // Add event listener to order form submission
+  document.getElementById('orderForm').addEventListener('submit', function(e) {
+    // Generate tracking ID
+    const trackingID = generateTrackingID();
+
+    // Save order details and tracking ID in localStorage (simple array)
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const orderDetails = {
+      id: trackingID,
+      name: this.name.value,
+      email: this.email.value,
+      phone: this.phone.value,
+      items: localStorage.getItem('cartItems') || 'No items info',
+      status: 'Order received. Preparing your food.'
+    };
+    orders.push(orderDetails);
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    // Show tracking ID to user immediately
+    alert(`Thank you for your order! Your tracking ID is: ${trackingID}`);
+
+    // Set tracking ID in hidden form input to email it via Formspree
+    document.getElementById('orderDetailsInput').value = `Tracking ID: ${trackingID}\nOrder Status: ${orderDetails.status}`;
+
+    // Clear cart or reset any UI here if you want
+  });
+
+  // Handle tracking form submission
+  document.getElementById('trackingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const inputID = document.getElementById('trackingInput').value.trim().toUpperCase();
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const order = orders.find(o => o.id === inputID);
+
+    const resultElem = document.getElementById('trackingResult');
+    if (order) {
+      // Show order status (can be expanded with real status changes later)
+      resultElem.textContent = `Tracking ID: ${order.id} - Status: ${order.status}`;
+      resultElem.style.color = 'green';
+    } else {
+      resultElem.textContent = 'Wrong ID – please place an order to get your tracking ID.';
+      resultElem.style.color = 'red';
+    }
+  });
+
+  document.getElementById('orderDetailsInput').value = generatedTrackingId;
+
+
+const paymentSelect = document.getElementById('paymentMethod');
+const cardDetails = document.getElementById('cardDetails');
+const cardInputs = cardDetails.querySelectorAll('input');
+
+paymentSelect.addEventListener('change', () => {
+  if (paymentSelect.value === 'paystack') {
+    cardDetails.classList.remove('hidden');
+    // Make card inputs required
+    cardInputs.forEach(input => input.setAttribute('required', ''));
+    // Hide bank details
+    document.getElementById('bankDetails').classList.add('hidden');
+  } else if (paymentSelect.value === 'bank') {
+    cardDetails.classList.add('hidden');
+    // Remove required attribute from card inputs when hidden
+    cardInputs.forEach(input => input.removeAttribute('required'));
+    // Show bank details
+    document.getElementById('bankDetails').classList.remove('hidden');
+  } else {
+    cardDetails.classList.add('hidden');
+    cardInputs.forEach(input => input.removeAttribute('required'));
+    document.getElementById('bankDetails').classList.add('hidden');
+  }
+});
+
+
+ 
+  </script>
+</body>
+</html>
